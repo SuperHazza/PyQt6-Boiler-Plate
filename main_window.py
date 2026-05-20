@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow
-from ui_main_window import Ui_MainWindow
+from PyQt6 import uic
 
 
 class MainWindow(QMainWindow):
@@ -9,8 +9,7 @@ class MainWindow(QMainWindow):
         Initialize the main window and set up the UI.
         """
         super().__init__()
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        uic.loadUi("design_1.ui",self)
 
         # --- initialise variables
 
@@ -21,12 +20,28 @@ class MainWindow(QMainWindow):
         """
         Connect UI signals to the corresponding slots.
         """
-        pass  # Add signal-slot connections here, e.g., button.clicked.connect(self.some_function)
+        self.pushButton_t1_b1.clicked.connect(self.button_b1_clicked)
+        self.pushButton_t2_b1.clicked.connect(self.button_b1_clicked)
+        self.pushButton_t1_b2.clicked.connect(self.button_b2_clicked)
+        self.pushButton_t2_b2.clicked.connect(self.button_b2_clicked)
+        self.pushButton_t1_b3.clicked.connect(self.button_b3_clicked)
+        self.pushButton_t2_b3.clicked.connect(self.button_b3_clicked)
+
+        self.pushButton_team_one_reset.clicked.connect(self.button_reset_score_clicked)
+        self.pushButton_team_two_reset.clicked.connect(self.button_reset_score_clicked)
 
     # ---- SLOTS ---- #
-    """
-    functions that are called from the signals go below here
-    """
+    def button_b1_clicked(self):
+        print("hi")
+
+    def button_b2_clicked(self):
+        print("bonjour")
+
+    def button_b3_clicked(self):
+        print("hello young squire")
+
+    def button_reset_score_clicked(self):
+        print("hey you old bat")
 
 
 if __name__ == "__main__":
