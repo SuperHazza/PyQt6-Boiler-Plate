@@ -22,6 +22,14 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.update_countdown)
         self.paused = False
 
+        self.button_one_value = 3
+        self.button_two_value = 1
+        self.button_three_value = -1
+        self.team_one_score = 0
+        self.team_two_score = 0
+
+        self.ready = True
+
         # --- connect signals to slots
         self.signals()
 
@@ -29,15 +37,15 @@ class MainWindow(QMainWindow):
         """
         Connect UI signals to the corresponding slots.
         """
-        self.pushButton_t1_b1.clicked.connect(self.button_b1_clicked)
-        self.pushButton_t2_b1.clicked.connect(self.button_b1_clicked)
-        self.pushButton_t1_b2.clicked.connect(self.button_b2_clicked)
-        self.pushButton_t2_b2.clicked.connect(self.button_b2_clicked)
-        self.pushButton_t1_b3.clicked.connect(self.button_b3_clicked)
-        self.pushButton_t2_b3.clicked.connect(self.button_b3_clicked)
+        self.pushButton_t1_b1.clicked.connect(self.button_t1_b1_clicked)
+        self.pushButton_t2_b1.clicked.connect(self.button_t2_b1_clicked)
+        self.pushButton_t1_b2.clicked.connect(self.button_t1_b2_clicked)
+        self.pushButton_t2_b2.clicked.connect(self.button_t2_b2_clicked)
+        self.pushButton_t1_b3.clicked.connect(self.button_t1_b3_clicked)
+        self.pushButton_t2_b3.clicked.connect(self.button_t2_b3_clicked)
 
-        self.pushButton_team_one_reset.clicked.connect(self.button_reset_score_clicked)
-        self.pushButton_team_two_reset.clicked.connect(self.button_reset_score_clicked)
+        self.pushButton_team_one_reset.clicked.connect(self.button_reset_t1_score_clicked)
+        self.pushButton_team_two_reset.clicked.connect(self.button_reset_t2_score_clicked)
 
         self.pushButton_edit.clicked.connect(self.button_edit_clicked)
         self.pushButton_start.clicked.connect(self.start_button_clicked)
@@ -46,17 +54,81 @@ class MainWindow(QMainWindow):
         self.pushButton_reset.clicked.connect(self.reset_button_clicked)
 
     # ---- SLOTS ---- #
-    def button_b1_clicked(self):
-        pass
+    def timer_wait(self, delay=500):
+        if not self.ready:
+            return
+        self.ready = False
+        QTimer.singleShot(delay, lambda: setattr(self, 'ready', True))
 
-    def button_b2_clicked(self):
-        pass
+    def button_t1_b1_clicked(self):
+        if self.ready:
+            self.team_one_score += self.button_one_value
+            self.update_score_labels()
+            self.timer_wait()
+        if not self.ready:
+            return
 
-    def button_b3_clicked(self):
-        pass
+    def button_t2_b1_clicked(self):
+        if self.ready:
+            self.team_two_score += self.button_one_value
+            self.update_score_labels()
+            self.timer_wait()
+        if not self.ready:
+            return
 
-    def button_reset_score_clicked(self):
-        pass
+    def button_t1_b2_clicked(self):
+        if self.ready:
+            self.team_one_score += self.button_two_value
+            self.update_score_labels()
+            self.timer_wait()
+        if not self.ready:
+            return
+
+    def button_t2_b2_clicked(self):
+        if self.ready:
+            self.team_two_score += self.button_two_value
+            self.update_score_labels()
+            self.timer_wait()
+        if not self.ready:
+            return
+
+    def button_t1_b3_clicked(self):
+        if self.ready:
+            self.team_one_score += self.button_three_value
+            self.update_score_labels()
+            self.timer_wait()
+        if not self.ready:
+            return
+
+    def button_t2_b3_clicked(self):
+        if self.ready:
+            self.team_two_score += self.button_three_value
+            self.update_score_labels()
+            self.timer_wait()
+        if not self.ready:
+            return
+
+    def button_reset_t1_score_clicked(self):
+        if self.ready:
+             self.team_one_score = 0
+             self.update_score_labels()
+             self.timer_wait()
+        if not self.ready:
+            return
+
+    def button_reset_t2_score_clicked(self):
+        if self.ready:
+            self.team_two_score = 0
+            self.update_score_labels()
+            self.timer_wait()
+        if not self.ready:
+            return
+
+    def format_button_text(self, value):
+        if value >= 0:
+            return f"+{value}"
+        else:
+            return str(value)
 
     def button_edit_clicked(self):
         window = ConfigDialog()
@@ -83,12 +155,18 @@ class MainWindow(QMainWindow):
         self.button_two_value = dialog.button_two_value
         self.button_three_value = dialog.button_three_value
 
-        self.pushButton_t1_b1.setText(str(self.button_one_value))
-        self.pushButton_t2_b1.setText(str(self.button_one_value))
-        self.pushButton_t1_b2.setText(str(self.button_two_value))
-        self.pushButton_t2_b2.setText(str(self.button_two_value))
-        self.pushButton_t1_b3.setText(str(self.button_three_value))
-        self.pushButton_t2_b3.setText(str(self.button_three_value))
+        self.pushButton_t1_b1.setText(self.format_button_text(self.button_one_value))
+        self.pushButton_t2_b1.setText(self.format_button_text(self.button_one_value))
+
+        self.pushButton_t1_b2.setText(self.format_button_text(self.button_two_value))
+        self.pushButton_t2_b2.setText(self.format_button_text(self.button_two_value))
+
+        self.pushButton_t1_b3.setText(self.format_button_text(self.button_three_value))
+        self.pushButton_t2_b3.setText(self.format_button_text(self.button_three_value))
+
+    def update_score_labels(self):
+        self.label_team_one_score.setText(str(self.team_one_score))
+        self.label_team_two_score.setText(str(self.team_two_score))
 
     def update_timer_values(self):
         self.label_timer.setText(f"{self.timer_minutes:02d}:{self.timer_seconds:02d}")
